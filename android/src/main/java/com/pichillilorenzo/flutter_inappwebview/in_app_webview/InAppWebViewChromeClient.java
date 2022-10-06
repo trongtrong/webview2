@@ -791,13 +791,40 @@ public class InAppWebViewChromeClient extends WebChromeClient implements PluginR
     startPhotoPickerIntent(filePathCallback, acceptType);
   }
 
+//  @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+//  @Override
+//  public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
+//    String[] acceptTypes = fileChooserParams.getAcceptTypes();
+//    boolean allowMultiple = fileChooserParams.getMode() == WebChromeClient.FileChooserParams.MODE_OPEN_MULTIPLE;
+//    Intent intent = fileChooserParams.createIntent();
+//    return startPhotoPickerIntent(filePathCallback, intent, acceptTypes, allowMultiple);
+//  }
+
   @TargetApi(Build.VERSION_CODES.LOLLIPOP)
   @Override
   public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
     String[] acceptTypes = fileChooserParams.getAcceptTypes();
     boolean allowMultiple = fileChooserParams.getMode() == WebChromeClient.FileChooserParams.MODE_OPEN_MULTIPLE;
     Intent intent = fileChooserParams.createIntent();
+    if (acceptsImages(acceptTypes) && fileChooserParams.isCaptureEnabled()){
+      return startDirectCameraIntent(filePathCallback);
+    }
     return startPhotoPickerIntent(filePathCallback, intent, acceptTypes, allowMultiple);
+  }
+
+  @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+  public boolean startDirectCameraIntent(final ValueCallback<Uri[]> callback) {
+    InAppWebViewFlutterPlugin.filePathCallback = callback;
+    if (!needsCameraPermission()) {
+      Intent photoSelectionIntent =  getPhotoIntent();
+      Activity activity = inAppBrowserDelegate != null ? inAppBrowserDelegate.getActivity() : plugin.activity;
+      if (photoSelectionIntent.resolveActivity(activity.getPackageManager()) != null) {
+        activity.startActivityForResult(photoSelectionIntent, PICKER);
+      } else {
+        Log.d(LOG_TAG, "there is no Activity to handle this Intent");
+      }
+    }
+    return true;
   }
 
   @Override
