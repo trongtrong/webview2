@@ -960,9 +960,9 @@ public class InAppWebViewChromeClient extends WebChromeClient implements PluginR
 //      if (acceptsImages(acceptTypes)) {
 //        extraIntents.add(getPhotoIntent());
 //      }
-//      if (acceptsVideo(acceptTypes)) {
-//        extraIntents.add(getVideoIntent());
-//      }
+      if (acceptsVideo(acceptTypes)) {
+        extraIntents.add(getVideoIntent());
+      }
     }
 
     Intent fileSelectionIntent = getFileChooserIntent(acceptTypes, allowMultiple);
