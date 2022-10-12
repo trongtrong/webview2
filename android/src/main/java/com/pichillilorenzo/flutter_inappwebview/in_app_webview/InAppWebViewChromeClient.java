@@ -957,9 +957,9 @@ public class InAppWebViewChromeClient extends WebChromeClient implements PluginR
 
     ArrayList<Parcelable> extraIntents = new ArrayList<>();
     if (!needsCameraPermission()) {
-//      if (acceptsImages(acceptTypes)) {
-//        extraIntents.add(getPhotoIntent());
-//      }
+      if (acceptsImages(acceptTypes)) {
+        extraIntents.add(getPhotoIntent());
+      }
       if (acceptsVideo(acceptTypes)) {
         extraIntents.add(getVideoIntent());
       }
@@ -1006,8 +1006,8 @@ public class InAppWebViewChromeClient extends WebChromeClient implements PluginR
   }
 
   private Intent getPhotoIntent() {
-    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-    imageOutputFileUri = getOutputUri(MediaStore.ACTION_IMAGE_CAPTURE);
+    Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+    imageOutputFileUri = getOutputUri(MediaStore.ACTION_VIDEO_CAPTURE);
     intent.putExtra(MediaStore.EXTRA_OUTPUT, imageOutputFileUri);
     return intent;
   }
