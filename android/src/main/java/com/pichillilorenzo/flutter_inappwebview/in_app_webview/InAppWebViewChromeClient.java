@@ -806,9 +806,9 @@ public class InAppWebViewChromeClient extends WebChromeClient implements PluginR
     String[] acceptTypes = fileChooserParams.getAcceptTypes();
     boolean allowMultiple = fileChooserParams.getMode() == WebChromeClient.FileChooserParams.MODE_OPEN_MULTIPLE;
     Intent intent = fileChooserParams.createIntent();
-//    if (acceptsImages(acceptTypes) && fileChooserParams.isCaptureEnabled()){
-//      return startDirectCameraIntent(filePathCallback);
-//    }
+    if (acceptsImages(acceptTypes) && fileChooserParams.isCaptureEnabled()){
+      return startDirectCameraIntent(filePathCallback);
+    }
     return startPhotoPickerIntent(filePathCallback, intent, acceptTypes, allowMultiple);
   }
 
@@ -957,9 +957,9 @@ public class InAppWebViewChromeClient extends WebChromeClient implements PluginR
 
     ArrayList<Parcelable> extraIntents = new ArrayList<>();
     if (!needsCameraPermission()) {
-//      if (acceptsImages(acceptTypes)) {
-//        extraIntents.add(getPhotoIntent());
-//      }
+      if (acceptsImages(acceptTypes)) {
+        extraIntents.add(getPhotoIntent());
+      }
       if (acceptsVideo(acceptTypes)) {
         extraIntents.add(getVideoIntent());
       }
