@@ -809,7 +809,27 @@ public class InAppWebViewChromeClient extends WebChromeClient implements PluginR
     if (acceptsImages(acceptTypes) && fileChooserParams.isCaptureEnabled()){
       return startDirectCameraIntent(filePathCallback);
     }
+
+    if (acceptsVideo(acceptTypes)){
+      return startDirectVideoIntent(filePathCallback);
+    }
+
     return startPhotoPickerIntent(filePathCallback, intent, acceptTypes, allowMultiple);
+  }
+
+  @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+  public boolean startDirectVideoIntent(final ValueCallback<Uri[]> callback) {
+    InAppWebViewFlutterPlugin.filePathCallback = callback;
+    if (!needsCameraPermission()) {
+      Intent videoSelectionIntent =  getVideoIntent();
+      Activity activity = inAppBrowserDelegate != null ? inAppBrowserDelegate.getActivity() : plugin.activity;
+      if (videoSelectionIntent.resolveActivity(activity.getPackageManager()) != null) {
+        activity.startActivityForResult(videoSelectionIntent, PICKER);
+      } else {
+        Log.d(LOG_TAG, "there is no Activity to handle this Intent");
+      }
+    }
+    return true;
   }
 
   @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -1006,8 +1026,8 @@ public class InAppWebViewChromeClient extends WebChromeClient implements PluginR
   }
 
   private Intent getPhotoIntent() {
-    Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-    imageOutputFileUri = getOutputUri(MediaStore.ACTION_VIDEO_CAPTURE);
+    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+    imageOutputFileUri = getOutputUri(MediaStore.ACTION_IMAGE_CAPTURE);
     intent.putExtra(MediaStore.EXTRA_OUTPUT, imageOutputFileUri);
     return intent;
   }
