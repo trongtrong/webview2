@@ -816,7 +816,7 @@ public class InAppWebViewChromeClient extends WebChromeClient implements PluginR
   public boolean startDirectCameraIntent(final ValueCallback<Uri[]> callback) {
     InAppWebViewFlutterPlugin.filePathCallback = callback;
     if (!needsCameraPermission()) {
-      Intent photoSelectionIntent =  /*getPhotoIntent()*/ getVideoIntent();
+      Intent photoSelectionIntent =  getPhotoIntent();
       Activity activity = inAppBrowserDelegate != null ? inAppBrowserDelegate.getActivity() : plugin.activity;
       if (photoSelectionIntent.resolveActivity(activity.getPackageManager()) != null) {
         activity.startActivityForResult(photoSelectionIntent, PICKER);
@@ -957,9 +957,9 @@ public class InAppWebViewChromeClient extends WebChromeClient implements PluginR
 
     ArrayList<Parcelable> extraIntents = new ArrayList<>();
     if (!needsCameraPermission()) {
-      if (acceptsImages(acceptTypes)) {
-        extraIntents.add(getPhotoIntent());
-      }
+//      if (acceptsImages(acceptTypes)) {
+//        extraIntents.add(getPhotoIntent());
+//      }
       if (acceptsVideo(acceptTypes)) {
         extraIntents.add(getVideoIntent());
       }
